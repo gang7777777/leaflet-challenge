@@ -1,12 +1,9 @@
 //  United States Geological Survey (USGS) All Earthquakes from the Past 7 Days
 url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
 
-var options = { year: 'numeric', month: 'numeric', day: 'numeric' };
-options.timeZone = 'UTC';
-
 d3.json(url).then(function(data) {
 
-    // Store the imported data to a variable
+    // Store the imported data to earthquakesData variable
     var earthquakesData = data;
     // Print the data
     console.log(earthquakesData);
@@ -33,8 +30,7 @@ d3.json(url).then(function(data) {
     };
     console.log(newData);
 
-    // Once we get a response, create a geoJSON layer containing the features array and add a popup for each marker
-    // then, send the layer to the createMap() function.
+    // Create a geoJSON layer containing the features array and add a popup for each marker and send the layer to the createMap() function.
     let earthquakes = L.geoJSON(data.features, {
         onEachFeature: addPopup
     });
@@ -43,25 +39,27 @@ d3.json(url).then(function(data) {
     createMap(earthquakes, newData);
 });
 
-// var options = { year: 'numeric', month: 'numeric', day: 'numeric' };
-// options.timeZone = 'UTC';
+// Define the time format
+var options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+options.timeZone = 'UTC';
 
 // Define a function we want to run once for each feature in the features array
 function addPopup(feature, layer) {
+
     // Give each feature a popup describing the place and time of the earthquake
     return layer.bindPopup(`<h3> ${feature.properties.place} </h3> <hr> <p> ${Date(feature.properties.time)} </p>`);
 }
 
-// function to receive a layer of markers and plot them on a map.
+// function to receive a layer of markers and plot them on a map
 function createMap(earthquakes, data) {
 
-    // Create the base layers.
+    // Define the base layers.
     var attribution =
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
     var titleUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
     var OpenStreetTiles = L.tileLayer(titleUrl, { attribution });
 
-    // Define a baseMaps object to hold our base layers
+    // Creating a baseMaps object to hold our base layers
     var baseMaps = {
         "OpenStreet": OpenStreetTiles
     };
@@ -70,8 +68,7 @@ function createMap(earthquakes, data) {
     var earthquakeCircles = [];
     data.forEach(function (element) {
 
-        // Select the color of the circle based on the 
-        // depth of the earthquake
+        // Select the color of the circle based on the depth of the earthquake
         var color = "";
         if (element.depth < 10) {
             color = "#80ff00";
@@ -92,13 +89,12 @@ function createMap(earthquakes, data) {
             color = "#ff0000";
         }
 
-        // create circles array
+        // create a circles array
         circles = L.circle([element.lon, element.lat], {
             fillOpacity: .8,
             color: "black",
             weight: 1,
             fillColor: color,
-            // Adjust radius
             radius: element.mag * 20000
         }).bindPopup(`<h6 style="font-weight: bold;">${element.title}</h6> <hr> 
             <p>Date: ${element.time} UTC</p> 
@@ -108,8 +104,7 @@ function createMap(earthquakes, data) {
         earthquakeCircles.push(circles);
     });
 
-    // create a layerGroup for each state's markers.
-    // Now we can handle them as one group instead of referencing each individually.
+    // Create a layerGroup for each state's markers.
     var earthquakeLayer = L.layerGroup(earthquakeCircles);
 
     // Create our map, giving it the streetmap and earthquakes layers to display on load
@@ -141,18 +136,12 @@ function createMap(earthquakes, data) {
     };
     legend.addTo(myMap);
 
-    // Adding a Scale to a map
+    // Adding a Scale to the map
     L.control.scale()
         .addTo(myMap);
 
-    // Create a layer control
-    // Pass in our baseMaps and overlayMaps
-    // Add the layer control to the map
+    // Create a layer control, Pass in our baseMaps and overlayMaps and Add the layer control to the map
     L.control.layers(baseMaps, overlayMaps, {
         collapsed: true
     }).addTo(myMap);
 };
-
-
-
-
