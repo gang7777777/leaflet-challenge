@@ -119,7 +119,7 @@ function createMap(earthquakes, data) {
     // Create a legend
     var myColors = ["#80ff00", "#bfff00", "#ffff00", "#ffc100", "#ff7400", "#ff0000"];
  
-    var legend = L.control({ position: 'bottomright' });
+    var legend = L.control({position:'bottomright'});
     legend.onAdd = function () {
 
         var div = L.DomUtil.create('div', 'info legend');
