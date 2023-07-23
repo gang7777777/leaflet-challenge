@@ -57,12 +57,13 @@ function createMap(earthquakes, data) {
     var attribution =
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
     var titleUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-    var OpenStreetTiles = L.tileLayer(titleUrl, { attribution });
+    var OpenStreetMap = L.tileLayer(titleUrl, { attribution });
 
     // Creating a baseMaps object to hold our base layers
     var baseMaps = {
-        "OpenStreet": OpenStreetTiles
+        "OpenStreet": OpenStreetMap
     };
+
 
     // Create the circles for each data point 
     var earthquakeCircles = [];
@@ -91,11 +92,11 @@ function createMap(earthquakes, data) {
 
         // create a circles array
         circles = L.circle([element.lon, element.lat], {
-            fillOpacity: .8,
+            fillOpacity: .7,
             color: "black",
-            weight: 1,
+            weight: .5,
             fillColor: color,
-            radius: element.mag * 20000
+            radius: element.mag * 18000
         }).bindPopup(`<h6 style="font-weight: bold;">${element.title}</h6> <hr> 
             <p>Date: ${element.time} UTC</p> 
             <p>Magnitude: ${element.mag} ml</p>
@@ -112,7 +113,7 @@ function createMap(earthquakes, data) {
         center: [40, -110],
         zoom: 5,
         fullscreenControl: true,
-        layers: [OpenStreetTiles, earthquakeLayer]
+        layers: [OpenStreetMap, earthquakeLayer]
 
     });
 
